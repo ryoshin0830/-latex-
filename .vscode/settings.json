@@ -1,0 +1,82 @@
+{
+    "latex-workshop.latex.tools": [
+        {
+            "name": "uplatex",
+            "command": "uplatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-shell-escape",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "dvipdfmx",
+            "command": "dvipdfmx",
+            "args": [
+                "%DOCFILE%"
+            ]
+        },
+        {
+            "name": "biber",
+            "command": "biber",
+            "args": [
+                "%DOCFILE%"
+            ]
+        }
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "upLaTeX + Biber",
+            "tools": [
+                "uplatex",
+                "biber",
+                "uplatex",
+                "uplatex",
+                "dvipdfmx"
+            ]
+        }
+    ],
+    "latex-workshop.latex.recipe.default": "upLaTeX + Biber",
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.autoBuild.run": "onSave",
+    "latex-workshop.latex.autoClean.run": "onBuilt",
+    "latex-workshop.message.error.show": false,
+    "latex-workshop.message.warning.show": false,
+    "latex-workshop.view.pdf.internal.synctex.enabled": true,
+    "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
+    "latex-workshop.latex.clean.fileTypes": [
+        "*.aux",
+        "*.bbl",
+        "*.blg",
+        "*.idx",
+        "*.ind",
+        "*.lof",
+        "*.lot",
+        "*.out",
+        "*.toc",
+        "*.acn",
+        "*.acr",
+        "*.alg",
+        "*.glg",
+        "*.glo",
+        "*.gls",
+        "*.ist",
+        "*.fls",
+        "*.log",
+        "*.fdb_latexmk",
+        "*.bcf",
+        "*.run.xml",
+        "*.synctex.gz"
+    ],
+    "latex-workshop.latex.magic.args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-shell-escape",
+        "%DOC%"
+    ],
+    "latex-workshop.latex.build.forceRecipeUsage": true,
+    "files.encoding": "utf8"
+} 
