@@ -1,8 +1,6 @@
-以下は、GitHubリポジトリ用のREADME例です。Markdown形式で書いているので、そのまま貼り付ければすぐに使えます。必要に応じてリポジトリ名やリンクなどを書き換えてください。
-
----
-
 # LaTeX Template for Japanese/English References
+
+> [Zenn](https://zenn.dev/articles/d3e815a2af8a1e/edit)
 
 日本語と英語の文献を同時に管理しやすいLaTeXテンプレートです。**upLaTeX + biblatex + biber** の組み合わせにより、以下のような機能を実現します。
 
