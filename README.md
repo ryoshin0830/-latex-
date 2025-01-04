@@ -1,59 +1,103 @@
-# 日本語論文 LaTeX テンプレート
+以下は、GitHubリポジトリ用のREADME例です。Markdown形式で書いているので、そのまま貼り付ければすぐに使えます。必要に応じてリポジトリ名やリンクなどを書き換えてください。
 
-## 概要
-このテンプレートは日本語の学術論文作成のためのLaTeXテンプレートです。biblatexとbiberを使用した参考文献管理システムを実装しています。
+---
 
-## 必要なソフトウェア
-- upTeX（日本語LaTeXエンジン）
-- dvipdfmx（PDF生成ツール）
-- BibTeX（参考文献処理システム）
-- Biber（参考文献管理用）
+# LaTeX Template for Japanese/English References
 
-## VSCode での使用方法
-`.vscode/settings.json` に必要な設定が含まれています：
-- PDFプレビューはタブで表示
-- ファイル保存時に自動ビルド
-- ビルド後の一時ファイルを自動クリーン
-- SyncTeX によるソースコードとPDFの双方向ジャンプ（ダブルクリックで移動）
+日本語と英語の文献を同時に管理しやすいLaTeXテンプレートです。**upLaTeX + biblatex + biber** の組み合わせにより、以下のような機能を実現します。
 
-## コンパイル方法
-1. upLaTeXでコンパイル:
-   ```
-   uplatex main.tex
-   ```
-2. Biberで参考文献を処理:
-   ```
-   biber main
-   ```
-3. 再度upLaTeXでコンパイル（2回）:
-   ```
-   uplatex main.tex
-   uplatex main.tex
-   ```
-4. PDFを生成:
-   ```
-   dvipdfmx main
-   ```
+- 日本語文献・英語文献を自動的に分割表示  
+- 日本語論文に適した著者表記（例：山田 一郎）と英語文献の表記（例：Smith, John）をそれぞれ整形  
+- BibTeXで起こりがちな日本語文字化けを軽減  
+- VSCode＋LaTeX Workshop連携で保存時に自動ビルド  
+- Zotero＋Better BibTeXによる自動エクスポートで文献管理を効率化  
 
-## 一時ファイルの削除
-以下のコマンドで一時ファイルを削除できます：
-```
-rm -f main.aux main.bbl main.bcf main.blg main.dvi main.log main.pdf main.run.xml main.synctex.gz
+## デモPDF
+
+下記のように「日本語文献 → 英語文献」の順で分割され、それぞれフォーマットが整った参考文献リストが出力されます。
+
+![PDFサンプル](https://storage.googleapis.com/zenn-user-upload/f22d99b51b36-20250103.png)
+
+## クローン方法
+
+```bash
+git clone https://github.com/ryoshin0830/-latex-.git
 ```
 
-## 参考文献の形式
-### 基本ルール
-- タイトルは日本語の場合「」（論文）または『』（書籍）、英語の場合"" で囲みます
-- 著者名は中黒（・）で区切ります
-- 日本語文献は全角の句読点（、。）を使用します
-- 各文献エントリには `langid = {japanese}` または `langid = {english}` を指定します
+> ディレクトリ名は自由につけられます（例：`my-latex-template` など）。
 
-### 引用コマンド
-- `\jcite{key}`: 本文中の引用（例：田中（2018）は〜）
-- `\jpcite{key}`: 括弧書きの引用（例：〜である（田中，2018））
-- `\jpcites{key1,key2}`: 複数文献の括弧書き引用（例：〜である（田中，2018；佐藤，2019））
+クローン直後のディレクトリ構成は以下のとおりです。
 
-## ファイル構成
-- `main.tex`: メインの論文ファイル
-- `マイ・ライブラリ.bib`: 参考文献データベース
-- `.vscode/settings.json`: VSCode用の設定ファイル 
+```
+my-latex-template
+├─ main.tex
+├─ マイ・ライブラリ.bib
+├─ .vscode/
+│   └─ settings.json
+└─ ...
+```
+
+## 使い方
+
+1. **TeX環境のセットアップ**  
+   - macOSの場合：Homebrew＋MacTeX推奨  
+   - Windowsの場合：TeX Live / WSL など  
+   - biberが導入済みか確認（`biber --version`）  
+
+2. **VSCode + LaTeX Workshop 設定**  
+   - `.vscode/settings.json` をご覧ください。  
+   - デフォルトで `upLaTeX → biber → dvipdfmx` を保存時に自動実行します。  
+
+3. **Zotero + Better BibTeX 連携（任意）**  
+   - Zoteroで文献管理→Better BibTeXプラグインで `.bib` を自動エクスポート  
+   - 文献更新のたびに `.bib` も自動更新されます  
+
+4. **コンパイルフロー**  
+   - VSCodeで `main.tex` を開き、保存すると自動ビルド  
+   - 手動で行いたい場合は以下のようなコマンドを使います  
+     ```bash
+     uplatex main.tex
+     biber main
+     uplatex main.tex
+     uplatex main.tex
+     dvipdfmx main.dvi
+     ```
+
+## テンプレートのカスタマイズ
+
+- `main.tex` には日本語/英語文献を仕分けるbiblatexの設定が含まれています。スタイルや表示形式の変更などは、`\DeclareFieldFormat` や `\DeclareNameFormat` を編集してください。  
+- 参考文献の言語判定は `langid={japanese}` / `langid={english}` を使用。Zoteroなどで管理している場合は「Language」フィールドや「Extra」フィールドに `langid=japanese` と書くようにします。
+
+## トラブルシューティング
+
+1. **参考文献が表示されない**  
+   - `\printbibliography` 前後の設定をチェック  
+   - `.aux` や `.bbl` などの生成ファイルを削除して再度コンパイル  
+
+2. **日本語の文字化け**  
+   - `\usepackage[utf8]{inputenc}` を使用しているか  
+   - VSCodeの `"files.encoding": "utf8"` が設定されているか  
+
+3. **Zotero + Better BibTeX が連携しない**  
+   - ZoteroのバージョンとBetter BibTeXのバージョンを確認  
+   - 「自動エクスポート」設定がオンになっているか  
+
+4. **著者区切りがおかしい**  
+   - Bibファイル内で著者間を `and` でつないでいるか（`,` や `&` ではなく）  
+
+## ライセンス
+
+本テンプレートは [MITライセンス](LICENSE) で提供しています。  
+ご自由にご利用・改変ください。フィードバックやプルリクエストも歓迎です。
+
+## 参考リンク
+
+- [Homebrew](https://brew.sh/)  
+- [biblatex](https://ctan.org/pkg/biblatex) / [Biber](https://ctan.org/pkg/biber)  
+- [TeXwiki](https://texwiki.texjp.org/)  
+- [Zotero](https://www.zotero.org/)  
+- [Better BibTeX for Zotero](https://retorque.re/zotero-better-bibtex/)  
+
+---
+
+もし本リポジトリが役立ったら、スターをつけていただけると嬉しいです！  
