@@ -1,101 +1,37 @@
-# LaTeX Template for Japanese/English References
+# Overleaf 使用说明
 
-> [Zenn](https://zenn.dev/articles/d3e815a2af8a1e/edit)
+## 项目设置
 
-日本語と英語の文献を同時に管理しやすいLaTeXテンプレートです。**upLaTeX + biblatex + biber** の組み合わせにより、以下のような機能を実現します。
+1. 在Overleaf中创建新项目
+2. 上传以下文件到项目根目录：
+   - `main.tex`（主文件）
+   - `latexmkrc`（编译配置文件）
+   - `マイ・ライブラリ.bib`（参考文献数据库）
 
-- 日本語文献・英語文献を自動的に分割表示  
-- 日本語論文に適した著者表記（例：山田 一郎）と英語文献の表記（例：Smith, John）をそれぞれ整形  
-- BibTeXで起こりがちな日本語文字化けを軽減  
-- VSCode＋LaTeX Workshop連携で保存時に自動ビルド  
-- Zotero＋Better BibTeXによる自動エクスポートで文献管理を効率化  
+## 编译设置
 
-## デモPDF
+1. 在Overleaf的菜单中，点击左上角的"Menu"
+2. 在"Compiler"选项中选择"LaTeX"
+3. 确保选择"TeX Live version"为最新版本
 
-下記のように「日本語文献 → 英語文献」の順で分割され、それぞれフォーマットが整った参考文献リストが出力されます。
+## 字体设置
 
-![PDFサンプル](https://storage.googleapis.com/zenn-user-upload/f22d99b51b36-20250103.png)
+本项目使用了日本语支持，需要以下宏包：
+- `jsarticle`（文档类）
+- `otf`（OpenType字体支持）
+- `inputenc`（UTF-8编码支持）
 
-## クローン方法
+这些包在Overleaf的TeX Live发行版中已经预装，无需额外配置。
 
-```bash
-git clone https://github.com/ryoshin0830/-latex-.git
-```
+## 编译顺序
 
-> ディレクトリ名は自由につけられます（例：`my-latex-template` など）。
+编译会自动按照以下顺序进行：
+1. uplatex
+2. biber
+3. uplatex（多次，如有需要）
+4. dvipdfmx
 
-クローン直後のディレクトリ構成は以下のとおりです。
+## 注意事项
 
-```
-my-latex-template
-├─ main.tex
-├─ マイ・ライブラリ.bib
-├─ .vscode/
-│   └─ settings.json
-└─ ...
-```
-
-## 使い方
-
-1. **TeX環境のセットアップ**  
-   - macOSの場合：Homebrew＋MacTeX推奨  
-   - Windowsの場合：TeX Live / WSL など  
-   - biberが導入済みか確認（`biber --version`）  
-
-2. **VSCode + LaTeX Workshop 設定**  
-   - `.vscode/settings.json` をご覧ください。  
-   - デフォルトで `upLaTeX → biber → dvipdfmx` を保存時に自動実行します。  
-
-3. **Zotero + Better BibTeX 連携（任意）**  
-   - Zoteroで文献管理→Better BibTeXプラグインで `.bib` を自動エクスポート  
-   - 文献更新のたびに `.bib` も自動更新されます  
-
-4. **コンパイルフロー**  
-   - VSCodeで `main.tex` を開き、保存すると自動ビルド  
-   - 手動で行いたい場合は以下のようなコマンドを使います  
-     ```bash
-     uplatex main.tex
-     biber main
-     uplatex main.tex
-     uplatex main.tex
-     dvipdfmx main.dvi
-     ```
-
-## テンプレートのカスタマイズ
-
-- `main.tex` には日本語/英語文献を仕分けるbiblatexの設定が含まれています。スタイルや表示形式の変更などは、`\DeclareFieldFormat` や `\DeclareNameFormat` を編集してください。  
-- 参考文献の言語判定は `langid={japanese}` / `langid={english}` を使用。Zoteroなどで管理している場合は「Language」フィールドや「Extra」フィールドに `langid=japanese` と書くようにします。
-
-## トラブルシューティング
-
-1. **参考文献が表示されない**  
-   - `\printbibliography` 前後の設定をチェック  
-   - `.aux` や `.bbl` などの生成ファイルを削除して再度コンパイル  
-
-2. **日本語の文字化け**  
-   - `\usepackage[utf8]{inputenc}` を使用しているか  
-   - VSCodeの `"files.encoding": "utf8"` が設定されているか  
-
-3. **Zotero + Better BibTeX が連携しない**  
-   - ZoteroのバージョンとBetter BibTeXのバージョンを確認  
-   - 「自動エクスポート」設定がオンになっているか  
-
-4. **著者区切りがおかしい**  
-   - Bibファイル内で著者間を `and` でつないでいるか（`,` や `&` ではなく）  
-
-## ライセンス
-
-本テンプレートは [MITライセンス](LICENSE) で提供しています。  
-ご自由にご利用・改変ください。フィードバックやプルリクエストも歓迎です。
-
-## 参考リンク
-
-- [Homebrew](https://brew.sh/)  
-- [biblatex](https://ctan.org/pkg/biblatex) / [Biber](https://ctan.org/pkg/biber)  
-- [TeXwiki](https://texwiki.texjp.org/)  
-- [Zotero](https://www.zotero.org/)  
-- [Better BibTeX for Zotero](https://retorque.re/zotero-better-bibtex/)  
-
----
-
-もし本リポジトリが役立ったら、スターをつけていただけると嬉しいです！  
+- 文件名中包含日文字符（如`マイ・ライブラリ.bib`）在Overleaf中完全支持
+- 如遇到编译错误，请检查日志输出
