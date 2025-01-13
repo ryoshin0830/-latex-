@@ -1,0 +1,125 @@
+% 文献番号のフォーマット設定
+\DeclareFieldFormat{labelnumber}{(#1)}  % 文献番号を括弧付きで表示
+\renewbibmacro*{begentry}{\printfield{labelnumber}\addspace}  % 文献の開始時に番号を表示
+
+% 著者名の表示形式設定
+\DeclareNameAlias{sortname}{family-given}   % 並び替え用の名前形式
+\DeclareNameAlias{labelname}{family-given}  % ラベル用の名前形式
+
+% 日本語著者名の特別な表示形式
+\DeclareNameFormat{labelname-japanese}{%
+  \ifcase\value{uniquename}%
+    \usebibmacro{name:family}
+    {\namepartfamily}
+    {\namepartgiven}
+    {\namepartprefix}
+    {\namepartsuffix}%
+  \fi
+  \usebibmacro{name:andothers}
+}
+
+% タイトルの表示形式設定
+\DeclareFieldFormat[book,collection]{title}{%  % 書籍・コレクションのタイトル
+  \iffieldequalstr{langid}{japanese}{『#1』}{#1}%  % 日本語なら『』、それ以外はそのまま
+}
+\DeclareFieldFormat[article,incollection]{title}{%  % 論文タイトル
+  \iffieldequalstr{langid}{japanese}{「#1」}{#1}%  % 日本語なら「」、それ以外はそのまま
+}
+\DeclareFieldFormat[periodical]{title}{%  % 定期刊行物のタイトル
+  \iffieldequalstr{langid}{japanese}{『#1』}{\mkbibemph{#1}}%  % 日本語なら『』、それ以外は斜体
+}
+\DeclareFieldFormat[article]{journaltitle}{%  % 雑誌タイトル
+  \iffieldequalstr{langid}{japanese}{『#1』}{\mkbibemph{#1}}%  % 日本語なら『』、それ以外は斜体
+}
+\DeclareFieldFormat[article]{pages}{#1}  % ページ番号の表示形式
+
+% 著者名の表示形式
+\DeclareNameFormat{author}{%
+  \iffieldequalstr{langid}{japanese}
+    {\namepartfamily\space\namepartgiven}  % 日本語は姓名の間にスペース
+    {\namepartfamily,\space\namepartgiven}%  % 英語は姓,名の形式
+  \ifnumequal{\value{listcount}}{\value{liststop}}
+    {}
+    {\iffieldequalstr{langid}{japanese}{・}{,\space}}%  % 複数著者の区切り
+}
+
+% 日付と年号の表示形式
+\DeclareFieldFormat{date}{#1}   % 日付の表示形式
+\DeclareFieldFormat{year}{#1}   % 年号の表示形式
+
+% 区切り文字の設定
+\renewcommand{\newunitpunct}{%  % 文献要素間の区切り
+  \iffieldequalstr{langid}{japanese}{．}{.}%  % 日本語なら全角ピリオド、英語なら半角ピリオド
+}
+\renewcommand{\labelnamepunct}{\space}  % ラベル名の後のスペース
+
+\renewbibmacro{in:}{}  % "in:"の表示を削除
+
+% 引用時の区切り文字設定
+\DeclareDelimFormat{nameyeardelim}{\addspace}  % 著者名と年の間のスペース
+\DeclareFieldFormat{biblabeldate}{#1}          % 参考文献での日付ラベルの形式
+\DeclareDelimFormat{multicitedelim}{\addsemicolon\space}  % 複数引用の区切り
+
+% 日本語用の区切り文字
+\renewcommand{\finalnamedelim}{・}     % 最後の著者名の前の区切り
+\renewcommand{\multinamedelim}{・}     % 複数著者名の区切り
+\renewcommand{\andothersdelim}{}       % "ほか"の前の区切り
+\renewcommand{\postnotedelim}{\addspace}  % 後注の前のスペース
+
+% "et al."を"ほか"に変更
+\DefineBibliographyStrings{english}{
+    andothers = {ほか}
+}
+
+% 引用時の著者名表示形式
+\DeclareNameFormat{labelname}{%
+  \ifnumgreater{\value{liststop}}{2}    % 著者が3人以上の場合
+    {\ifnumequal{\value{listcount}}{1}
+       {\namepartfamily\bibstring{andothers}}  % 第1著者名+"ほか"
+       {}}
+    {\ifnumequal{\value{listcount}}{1}   % 著者が2人以下の場合
+       {\namepartfamily%
+        \ifnumequal{\value{liststop}}{2}
+          {\iffieldequalstr{langid}{japanese}{\finalnamedelim}{,\space}}
+          {}}
+       {\ifnumequal{\value{listcount}}{2}
+          {\namepartfamily}
+          {}}}%
+}
+
+% 参考文献リストでの著者名表示形式
+\DeclareNameFormat{default}{%
+  \iffieldequalstr{langid}{japanese}{%   % 日本語の場合
+    \namepartfamily\space\namepartgiven%  % 姓名の間にスペース
+  }{%                                    % 英語の場合
+    \namepartfamily,\space\namepartgiveni.%  % 姓, 名のイニシャル
+    \ifnumequal{\value{listcount}}{\value{liststop}}
+      {}
+      {\ifnumgreater{\value{listcount}}{1}{\addcomma\space}{}}%
+  }%
+  \ifnumequal{\value{listcount}}{\value{liststop}}
+    {}
+    {\iffieldequalstr{langid}{japanese}{・}{\addcomma\space}}%  % 著者間の区切り
+}
+
+% 日本語用の引用コマンド定義
+\makeatletter
+% 本文中の引用（田中（2018）は〜）のコマンド
+\newcommand{\jcite}[1]{%
+  \citeauthor{#1}（\citeyear{#1}）%
+}
+
+% 括弧書きの引用（〜である（田中，2018））のコマンド
+\newcommand{\jpcite}[1]{%
+  （\citeauthor{#1}，\citeyear{#1}）%
+}
+
+% 複数文献の括弧書き引用のコマンド
+\newcommand{\jpcites}[1]{%
+  （\def\i{1}\@for\@citeb:=#1\do{%    % 複数の文献をループ処理
+    \ifnum\i=1\else；\fi%              % 2番目以降の文献の前に；を挿入
+    \edef\i{0}%
+    \citeauthor{\@citeb}，\citeyear{\@citeb}%  % 著者名，年の形式で表示
+  }）%
+}
+\makeatother 

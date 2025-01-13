@@ -1,199 +1,17 @@
 % !TEX program = uplatex
-% upLaTeXを使用してコンパイルすることを指定
 
+% 文書クラスの設定
 \documentclass[a4paper,11pt,uplatex]{jsarticle}
-% A4用紙、11ポイントのフォントサイズ、upLaTeX用の設定でjsarticleクラスを使用
 
 % 日本語サポートのためのパッケージ
 \usepackage[utf8]{inputenc}  % UTF-8エンコーディングを使用
 \usepackage{otf}            % OpenTypeフォントのサポート
 
-% biblatexの設定
-\usepackage[backend=biber,    % バックエンドとしてbiberを使用
-    style=authoryear-ibid,    % 著者-年方式で、同じ文献の2回目以降の引用ではibidを使用
-    citestyle=authoryear-comp,% 引用スタイルは著者-年方式で、複数引用を圧縮表示
-    maxcitenames=2,           % 引用時の最大著者数を2名に制限
-    minnames=1,               % 最小著者表示数を1名に設定
-    maxnames=999,             % 参考文献リストでの最大著者表示数を999名に設定
-    uniquelist=false,         % 著者リストの一意性を要求しない
-    sorting=none,             % 文献の並び替えを行わない
-    defernumbers=true,        % 文献番号の割り当てを遅延させる
-    labelnumber=true]{biblatex}  % 文献ラベルに番号を使用
+% 参考文献の設定の読み込み
+\input{bibliography}
 
-% 日本語文献と非日本語文献を分けるためのフィルター定義
-\defbibcheck{japanese}{%      % 日本語文献のみを表示するフィルター
-  \iffieldequalstr{langid}{japanese}
-    {}
-    {\skipentry}%
-}
-
-\defbibcheck{notjapanese}{%  % 非日本語文献のみを表示するフィルター
-  \iffieldequalstr{langid}{japanese}
-    {\skipentry}
-    {}%
-}
-
-% 文献の並び順を制御するためのマッピング
-\DeclareSourcemap{
-  \maps[datatype=bibtex]{
-    \map{
-      \step[fieldsource=langid,match=japanese,final]    % 日本語文献を先に
-      \step[fieldset=presort,fieldvalue={a}]
-    }
-    \map{
-      \step[fieldsource=langid,notmatch=japanese,final] % 非日本語文献を後に
-      \step[fieldset=presort,fieldvalue={b}]
-    }
-  }
-}
-
-% 参考文献の詳細な並び順の設定
-\DeclareSortingTemplate{none}{
-  \sort{
-    \field{presort}          % まずpresortフィールドで並び替え
-  }
-  \sort[locale=ja]{
-    \field{sortname}
-    \field{author}
-    \field{editor}
-    \field{translator}
-    \field{sorttitle}
-    \field{title}
-  }
-  \sort{
-    \field{sortyear}         % 最後に年で並び替え
-    \field{year}
-  }
-}
-
-% 文献番号のフォーマット設定
-\DeclareFieldFormat{labelnumber}{(#1)}  % 文献番号を括弧付きで表示
-\renewbibmacro*{begentry}{\printfield{labelnumber}\addspace}  % 文献の開始時に番号を表示
-
-% 著者名の表示形式設定
-\DeclareNameAlias{sortname}{family-given}   % 並び替え用の名前形式
-\DeclareNameAlias{labelname}{family-given}  % ラベル用の名前形式
-
-% 日本語著者名の特別な表示形式
-\DeclareNameFormat{labelname-japanese}{%
-  \ifcase\value{uniquename}%
-    \usebibmacro{name:family}
-    {\namepartfamily}
-    {\namepartgiven}
-    {\namepartprefix}
-    {\namepartsuffix}%
-  \fi
-  \usebibmacro{name:andothers}
-}
-
-% タイトルの表示形式設定
-\DeclareFieldFormat[book,collection]{title}{%  % 書籍・コレクションのタイトル
-  \iffieldequalstr{langid}{japanese}{『#1』}{#1}%  % 日本語なら『』、それ以外はそのまま
-}
-\DeclareFieldFormat[article,incollection]{title}{%  % 論文タイトル
-  \iffieldequalstr{langid}{japanese}{「#1」}{#1}%  % 日本語なら「」、それ以外はそのまま
-}
-\DeclareFieldFormat[periodical]{title}{%  % 定期刊行物のタイトル
-  \iffieldequalstr{langid}{japanese}{『#1』}{\mkbibemph{#1}}%  % 日本語なら『』、それ以外は斜体
-}
-\DeclareFieldFormat[article]{journaltitle}{%  % 雑誌タイトル
-  \iffieldequalstr{langid}{japanese}{『#1』}{\mkbibemph{#1}}%  % 日本語なら『』、それ以外は斜体
-}
-\DeclareFieldFormat[article]{pages}{#1}  % ページ番号の表示形式
-
-% 著者名の表示形式
-\DeclareNameFormat{author}{%
-  \iffieldequalstr{langid}{japanese}
-    {\namepartfamily\space\namepartgiven}  % 日本語は姓名の間にスペース
-    {\namepartfamily,\space\namepartgiven}%  % 英語は姓,名の形式
-  \ifnumequal{\value{listcount}}{\value{liststop}}
-    {}
-    {\iffieldequalstr{langid}{japanese}{・}{,\space}}%  % 複数著者の区切り
-}
-
-% 日付と年号の表示形式
-\DeclareFieldFormat{date}{#1}   % 日付の表示形式
-\DeclareFieldFormat{year}{#1}   % 年号の表示形式
-
-% 区切り文字の設定
-\renewcommand{\newunitpunct}{%  % 文献要素間の区切り
-  \iffieldequalstr{langid}{japanese}{．}{.}%  % 日本語なら全角ピリオド、英語なら半角ピリオド
-}
-\renewcommand{\labelnamepunct}{\space}  % ラベル名の後のスペース
-
-\renewbibmacro{in:}{}  % "in:"の表示を削除
-
-% 引用時の区切り文字設定
-\DeclareDelimFormat{nameyeardelim}{\addspace}  % 著者名と年の間のスペース
-\DeclareFieldFormat{biblabeldate}{#1}          % 参考文献での日付ラベルの形式
-\DeclareDelimFormat{multicitedelim}{\addsemicolon\space}  % 複数引用の区切り
-
-% 日本語用の区切り文字
-\renewcommand{\finalnamedelim}{・}     % 最後の著者名の前の区切り
-\renewcommand{\multinamedelim}{・}     % 複数著者名の区切り
-\renewcommand{\andothersdelim}{}       % "ほか"の前の区切り
-\renewcommand{\postnotedelim}{\addspace}  % 後注の前のスペース
-
-% "et al."を"ほか"に変更
-\DefineBibliographyStrings{english}{
-    andothers = {ほか}
-}
-
-% 引用時の著者名表示形式
-\DeclareNameFormat{labelname}{%
-  \ifnumgreater{\value{liststop}}{2}    % 著者が3人以上の場合
-    {\ifnumequal{\value{listcount}}{1}
-       {\namepartfamily\bibstring{andothers}}  % 第1著者名+"ほか"
-       {}}
-    {\ifnumequal{\value{listcount}}{1}   % 著者が2人以下の場合
-       {\namepartfamily%
-        \ifnumequal{\value{liststop}}{2}
-          {\iffieldequalstr{langid}{japanese}{\finalnamedelim}{,\space}}
-          {}}
-       {\ifnumequal{\value{listcount}}{2}
-          {\namepartfamily}
-          {}}}%
-}
-
-% 参考文献リストでの著者名表示形式
-\DeclareNameFormat{default}{%
-  \iffieldequalstr{langid}{japanese}{%   % 日本語の場合
-    \namepartfamily\space\namepartgiven%  % 姓名の間にスペース
-  }{%                                    % 英語の場合
-    \namepartfamily,\space\namepartgiveni.%  % 姓, 名のイニシャル
-    \ifnumequal{\value{listcount}}{\value{liststop}}
-      {}
-      {\ifnumgreater{\value{listcount}}{1}{\addcomma\space}{}}%
-  }%
-  \ifnumequal{\value{listcount}}{\value{liststop}}
-    {}
-    {\iffieldequalstr{langid}{japanese}{・}{\addcomma\space}}%  % 著者間の区切り
-}
-
-% 日本語用の引用コマンド定義
-\makeatletter
-% 本文中の引用（田中（2018）は〜）のコマンド
-\newcommand{\jcite}[1]{%
-  \citeauthor{#1}（\citeyear{#1}）%
-}
-
-% 括弧書きの引用（〜である（田中，2018））のコマンド
-\newcommand{\jpcite}[1]{%
-  （\citeauthor{#1}，\citeyear{#1}）%
-}
-
-% 複数文献の括弧書き引用のコマンド
-\newcommand{\jpcites}[1]{%
-  （\def\i{1}\@for\@citeb:=#1\do{%    % 複数の文献をループ処理
-    \ifnum\i=1\else；\fi%              % 2番目以降の文献の前に；を挿入
-    \edef\i{0}%
-    \citeauthor{\@citeb}，\citeyear{\@citeb}%  % 著者名，年の形式で表示
-  }）%
-}
-\makeatother 
-
-% 参考文献データベースの指定
-\addbibresource{マイ・ライブラリ.bib}
+% 引用スタイルの設定の読み込み
+\input{citation_style}
 
 \begin{document}
 
@@ -206,34 +24,8 @@
 % 目次
 \tableofcontents
 
-% 本文
-\section{序論}
-% ここに序論を書く
-本研究では、...について検討する。先行研究として、\jcite{yamada2020}は大学教育における学習支援システムについて報告している。また、\jcite{tanaka2021}は高等教育における学習方法について検討を行った。
-
-\section{関連研究}
-% ここに関連研究を書く
-% 単独の引用の例（括弧書き）
-関連研究として、オンライン学習における学習者支援に関する研究が行われている\jpcite{suzuki2022}。また、高等教育におけるアクティブラーニングの実践に関する研究も進められている\jpcite{sato2021}。
-
-% 複数文献の引用例
-近年、大学教育に関する様々な研究が行われている\jpcites{nakamura2023,kato2022}。これらの研究は、日本における高等教育の発展に貢献している。
-
-\section{提案手法}
-% ここに提案手法を書く
-本研究では、以下の手法を提案する...
-
-\section{実験}
-% ここに実験内容を書く
-実験では、以下の手順で...
-
-\section{考察}
-% ここに考察を書く
-実験結果から、以下のことが考察される...
-
-\section{結論}
-% ここに結論を書く
-本研究では、以下の結論が得られた...
+% 本文の読み込み
+\input{content}
 
 % 参考文献リストの出力
 \printbibheading[title=参考文献]
