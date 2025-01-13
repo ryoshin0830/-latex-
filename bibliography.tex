@@ -1,0 +1,60 @@
+% biblatexの設定
+\usepackage[backend=biber,    % バックエンドとしてbiberを使用
+    style=authoryear-ibid,    % 著者-年方式で、同じ文献の2回目以降の引用ではibidを使用
+    citestyle=authoryear-comp,% 引用スタイルは著者-年方式で、複数引用を圧縮表示
+    maxcitenames=2,           % 引用時の最大著者数を2名に制限
+    minnames=1,               % 最小著者表示数を1名に設定
+    maxnames=999,             % 参考文献リストでの最大著者表示数を999名に設定
+    uniquelist=false,         % 著者リストの一意性を要求しない
+    sorting=none,             % 文献の並び替えを行わない
+    defernumbers=true,        % 文献番号の割り当てを遅延させる
+    labelnumber=true]{biblatex}  % 文献ラベルに番号を使用
+
+% 日本語文献と非日本語文献を分けるためのフィルター定義
+\defbibcheck{japanese}{%      % 日本語文献のみを表示するフィルター
+  \iffieldequalstr{langid}{japanese}
+    {}
+    {\skipentry}%
+}
+
+\defbibcheck{notjapanese}{%  % 非日本語文献のみを表示するフィルター
+  \iffieldequalstr{langid}{japanese}
+    {\skipentry}
+    {}%
+}
+
+% 文献の並び順を制御するためのマッピング
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \step[fieldsource=langid,match=japanese,final]    % 日本語文献を先に
+      \step[fieldset=presort,fieldvalue={a}]
+    }
+    \map{
+      \step[fieldsource=langid,notmatch=japanese,final] % 非日本語文献を後に
+      \step[fieldset=presort,fieldvalue={b}]
+    }
+  }
+}
+
+% 参考文献の詳細な並び順の設定
+\DeclareSortingTemplate{none}{
+  \sort{
+    \field{presort}          % まずpresortフィールドで並び替え
+  }
+  \sort[locale=ja]{
+    \field{sortname}
+    \field{author}
+    \field{editor}
+    \field{translator}
+    \field{sorttitle}
+    \field{title}
+  }
+  \sort{
+    \field{sortyear}         % 最後に年で並び替え
+    \field{year}
+  }
+}
+
+% 参考文献データベースの指定
+\addbibresource{マイ・ライブラリ.bib} 
