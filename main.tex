@@ -1,11 +1,17 @@
-% !TEX program = uplatex
+% !TEX program = xelatex
 
 % 文書クラスの設定
-\documentclass[a4paper,11pt,uplatex]{jsarticle}
+\documentclass[a4paper,11pt]{bxjsarticle}
 
 % 日本語サポートのためのパッケージ
-\usepackage[utf8]{inputenc}  % UTF-8エンコーディングを使用
-\usepackage{otf}            % OpenTypeフォントのサポート
+\usepackage{xeCJK}
+\usepackage{zxjatype}
+\usepackage[japanese]{babel}
+
+% フォント設定
+\setCJKmainfont{Hiragino Mincho Pro}
+\setCJKsansfont{Hiragino Sans}
+\setCJKmonofont{Hiragino Sans}
 
 % 参考文献の設定の読み込み
 \input{bibliography}
