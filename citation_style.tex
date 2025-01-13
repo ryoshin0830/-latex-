@@ -1,3 +1,6 @@
+% 言語マッピングの設定
+\DeclareLanguageMapping{japanese}{english}
+
 % 文献番号のフォーマット設定
 \DeclareFieldFormat{labelnumber}{(#1)}  % 文献番号を括弧付きで表示
 \renewbibmacro*{begentry}{\printfield{labelnumber}\addspace}  % 文献の開始時に番号を表示
@@ -75,7 +78,7 @@
 \DeclareNameFormat{labelname}{%
   \ifnumgreater{\value{liststop}}{2}    % 著者が3人以上の場合
     {\ifnumequal{\value{listcount}}{1}
-       {\namepartfamily\bibstring{andothers}}  % 第1著者名+"ほか"
+       {\namepartfamily\space ほか}  % 第1著者名+"ほか"
        {}}
     {\ifnumequal{\value{listcount}}{1}   % 著者が2人以下の場合
        {\namepartfamily%
