@@ -2,7 +2,7 @@
 
 > [Zenn](https://zenn.dev/articles/d3e815a2af8a1e/edit)
 
-日本語と英語の文献を同時に管理しやすいLaTeXテンプレートです。**upLaTeX + biblatex + biber** の組み合わせにより、以下のような機能を実現します。
+日本語と英語の文献を同時に管理しやすいLaTeXテンプレートです。**XeLaTeX + biblatex + biber** の組み合わせにより、以下のような機能を実現します。
 
 - 日本語文献・英語文献を自動的に分割表示  
 - 日本語論文に適した著者表記（例：山田 一郎）と英語文献の表記（例：Smith, John）をそれぞれ整形  
