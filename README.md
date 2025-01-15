@@ -44,7 +44,7 @@ my-latex-template
 
 2. **VSCode + LaTeX Workshop 設定**  
    - `.vscode/settings.json` をご覧ください。  
-   - デフォルトで `upLaTeX → biber → dvipdfmx` を保存時に自動実行します。  
+   - デフォルトで `XeLaTeX → biber → XeLaTeX` を保存時に自動実行します。  
 
 3. **Zotero + Better BibTeX 連携（任意）**  
    - Zoteroで文献管理→Better BibTeXプラグインで `.bib` を自動エクスポート  
@@ -54,11 +54,10 @@ my-latex-template
    - VSCodeで `main.tex` を開き、保存すると自動ビルド  
    - 手動で行いたい場合は以下のようなコマンドを使います  
      ```bash
-     uplatex main.tex
+     xelatex main.tex
      biber main
-     uplatex main.tex
-     uplatex main.tex
-     dvipdfmx main.dvi
+     xelatex main.tex
+     xelatex main.tex
      ```
 
 ## テンプレートのカスタマイズ
